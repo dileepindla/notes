@@ -106,7 +106,7 @@ export default function SharedNotePage() {
             Expires at: {new Date(note.expiresAt).toLocaleString()}
           </CardDescription>
           {note.autoDeleteAfterReading && (
-            <Alert variant="warning">
+            <Alert variant={'default'}>
               <AlertCircle className="h-4 w-4" />
               <AlertTitle>Warning</AlertTitle>
               <AlertDescription>This note will be deleted after reading.</AlertDescription>

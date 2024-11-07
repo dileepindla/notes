@@ -1,9 +1,10 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import clientPromise from '@/lib/mongodb'
 import { ObjectId } from 'mongodb'
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
-  const id = params.id
+export async function GET(request: NextRequest, context: unknown) {
+    const { id } = (context as { params: { id: string } }).params;
+  
   try {
     const client = await clientPromise
     const db = client.db("expirableNotes")
@@ -18,8 +19,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
   }
 }
 
-export async function PATCH(request: Request, { params }: { params: { id: string } }) {
-  const id = params.id
+export async function PATCH(request: NextRequest, context: unknown) {
+    const { id } = (context as { params: { id: string } }).params;
+  
   try {
     const client = await clientPromise
     const db = client.db("expirableNotes")
@@ -38,8 +40,9 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  const id = params.id
+export async function DELETE(request: NextRequest, context: unknown) {
+    const { id } = (context as { params: { id: string } }).params;
+  
   try {
     const client = await clientPromise
     const db = client.db("expirableNotes")

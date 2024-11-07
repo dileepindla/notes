@@ -148,7 +148,7 @@ export function ExpirableNotesAppComponent() {
               />
             </div>
           )}
-          <Select value={expirationTime} onValueChange={setExpirationTime} className="mt-2">
+          <Select value={expirationTime} onValueChange={setExpirationTime}>
             <SelectTrigger>
               <SelectValue placeholder="Expiration time" />
             </SelectTrigger>
