@@ -111,9 +111,7 @@ export function ExpirableNotesAppComponent() {
   })
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Expirable Notes App</h1>
-      
+    <div className="flex flex-col space-y-8">      
       <Card className="mb-4">
         <CardHeader>
           <CardTitle>Create a New Note</CardTitle>

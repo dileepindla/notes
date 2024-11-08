@@ -3,8 +3,11 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { AlertCircle, Clock } from 'lucide-react'
+import { AlertCircle, ArrowLeft, Clock } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+
 
 type Note = {
   id: string
@@ -82,12 +85,17 @@ export default function SharedNotePage() {
 
   if (error) {
     return (
-      <div className="container mx-auto p-4">
-        <Alert variant="destructive">
+        <div className="container mx-auto p-4 flex flex-col items-center justify-center h-[calc(100vh-8rem)]">
+        <Alert variant="destructive" className="max-w-md w-full mb-4">
           <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Notice</AlertTitle>
+          <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
+        <Button asChild>
+          <Link href="/" className="flex items-center">
+            <ArrowLeft className="mr-2 h-4 w-4" /> Go to Home Page
+          </Link>
+        </Button>
       </div>
     )
   }
@@ -97,7 +105,7 @@ export default function SharedNotePage() {
   }
 
   return (
-    <div className="container mx-auto p-4 min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 flex items-center justify-center">
+    <div className="container mx-auto p-4 flex flex-col items-center justify-center min-h-[calc(100vh-8rem)]">
       <Card className="w-full max-w-2xl">
         <CardHeader>
           <CardTitle className="text-2xl">Shared Note</CardTitle>
@@ -117,6 +125,11 @@ export default function SharedNotePage() {
           <p className="whitespace-pre-wrap text-gray-700 text-lg">{note.content}</p>
         </CardContent>
       </Card>
+      <Button asChild className="mt-4">
+        <Link href="/" className="flex items-center">
+          <ArrowLeft className="mr-2 h-4 w-4" /> Create Your Own Note
+        </Link>
+      </Button>
     </div>
   )
 }

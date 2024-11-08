@@ -22,7 +22,17 @@ import {
 } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Trash2, Share2, Clock } from "lucide-react";
+import {
+  Trash2,
+  Share2,
+  Clock,
+  Trash,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+
+const MAX_CHARS = 1000;
 
 type Note = {
   id: string;
@@ -42,6 +52,7 @@ export default function ExpirableNotesApp() {
   const [laterTime, setLaterTime] = useState("");
   const [autoDeleteAfterReading, setAutoDeleteAfterReading] = useState(false);
   const [userNoteIds, setUserNoteIds] = useState<string[]>([]);
+  const [expandedNotes, setExpandedNotes] = useState<string[]>([]);
 
   useEffect(() => {
     fetchNotes();
@@ -70,7 +81,7 @@ export default function ExpirableNotesApp() {
   };
 
   const createNote = async () => {
-    if (!newNote.trim()) return;
+    if (!newNote.trim() || newNote.length > MAX_CHARS) return;
 
     const now = new Date();
     let displayAt = new Date();
@@ -128,6 +139,20 @@ export default function ExpirableNotesApp() {
     }
   };
 
+  const toggleNoteExpansion = (noteId: string) => {
+    setExpandedNotes((prev) =>
+      prev.includes(noteId)
+        ? prev.filter((id) => id !== noteId)
+        : [...prev, noteId]
+    );
+  };
+
+  const truncateText = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text
+    return text.slice(0, maxLength) + '...'
+  }
+
+
   const shareNote = (noteId: string) => {
     const shareableLink = `${window.location.origin}/share/${noteId}`;
     navigator.clipboard.writeText(shareableLink);
@@ -156,7 +181,7 @@ export default function ExpirableNotesApp() {
 
   return (
     <>
-      <div className="w-full max-w-[400px] mx-auto space-y-8">
+      <div className="w-full max-w-[400px] mx-auto space-y-4">
         <Card className="mb-8">
           <CardHeader>
             <CardTitle>Create a New Note</CardTitle>
@@ -167,7 +192,20 @@ export default function ExpirableNotesApp() {
               onChange={(e) => setNewNote(e.target.value)}
               placeholder="Enter your note here"
               className="min-h-[150px] text-lg"
+              maxLength={MAX_CHARS}
             />
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">
+                {newNote.length}/{MAX_CHARS} characters
+              </span>
+              {newNote.length > MAX_CHARS && (
+                <Alert variant="destructive">
+                  <AlertDescription>
+                    Note exceeds maximum character limit
+                  </AlertDescription>
+                </Alert>
+              )}
+            </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="display-option">Display Option</Label>
@@ -238,21 +276,60 @@ export default function ExpirableNotesApp() {
       </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {userNotes.map((note) => (
-          <Card key={note.id} className="flex flex-col">
+          <Card key={note.id} className="flex flex-col h-[350px]">
             <CardHeader>
               <CardTitle className="text-xl">Note</CardTitle>
-              <CardDescription className="flex items-center text-sm">
-                <Clock className="w-4 h-4 mr-2" />
-                {new Date() < note.displayAt
-                  ? `Available from: ${note.displayAt.toLocaleString()}`
-                  : `Expires at: ${note.expiresAt.toLocaleString()}`}
+              <CardDescription className="space-y-2">
+                <div className="flex items-center text-sm">
+                  <Clock className="w-4 h-4 mr-2 flex-shrink-0" />
+                  <span>
+                    {new Date() < note.displayAt
+                      ? `Available from: ${note.displayAt.toLocaleString()}`
+                      : `Expires at: ${note.expiresAt.toLocaleString()}`}
+                  </span>
+                </div>
+                <div className="flex items-center text-sm">
+                  <Trash2 className="w-4 h-4 mr-2 flex-shrink-0" />
+                  <span>
+                    Auto-delete: {note.autoDeleteAfterReading ? "Yes" : "No"}
+                  </span>
+                </div>
               </CardDescription>
             </CardHeader>
-            <CardContent className="flex-grow">
-              <p className="whitespace-pre-wrap text-gray-700">
-                {note.content}
-              </p>
+            <CardContent className="flex-grow overflow-hidden">
+              <div className="relative h-full flex flex-col">
+                <div className="overflow-y-auto flex-grow">
+                  <p className="whitespace-pre-wrap text-gray-700 pb-8">
+                    {expandedNotes.includes(note.id)
+                      ? note.content
+                      : truncateText(note.content, 200)}
+                  </p>
+                </div>
+                {note.content.length > 200 && (
+                  <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-background to-transparent pt-4">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="w-full"
+                      onClick={() => toggleNoteExpansion(note.id)}
+                    >
+                      {expandedNotes.includes(note.id) ? (
+                        <>
+                          <ChevronUp className="w-4 h-4 mr-2" />
+                          Less
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="w-4 h-4 mr-2" />
+                          More
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                )}
+              </div>
             </CardContent>
+
             <CardFooter className="flex justify-between">
               <Button
                 onClick={() => shareNote(note.id)}
