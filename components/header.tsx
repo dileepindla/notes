@@ -35,7 +35,7 @@ export function Header() {
             <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
             <span className="sr-only">Toggle theme</span>
           </Button>
-          <Link href="https://github.com/yourusername/expirable-notes" target="_blank" rel="noopener noreferrer">
+          <Link href="https://github.com/dileepindla/notes" target="_blank" rel="noopener noreferrer">
             <Button variant="ghost" size="icon" aria-label="GitHub">
               <Github className="h-5 w-5" />
               <span className="sr-only">GitHub</span>

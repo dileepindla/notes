@@ -8,7 +8,7 @@ export function Footer() {
           Crafting ephemeral moments, one note at a time.
         </p>
         <Link
-          href="https://github.com/yourusername/expirable-notes"
+          href="https://github.com/dileepindla/notes"
           target="_blank"
           rel="noopener noreferrer"
           className="text-sm font-medium hover:underline"
